@@ -1,6 +1,6 @@
 # THE ECHO — บทที่ 4: เลเยอร์ที่ 1 – สถาปัตยกรรมที่ขัดแย้ง (The Ideological Breach)
 
-**[ECHO ARCHITECTURE LAB – PRESENT TIMELINE – 10:45 น.]**
+**[ECHO ARCHITECTURE LAB – PRESENT TIMELINE – 11:20 น.]**
 
 *สัญญาณเตือนภัยไซเรนสีแดงกระพริบถี่วาบไปทั่วเมนเฟรมของ ECHO LAB!*
 
