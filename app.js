@@ -10,7 +10,8 @@ const state = {
     fontSize: 18, // in pixels
     isSidebarOpen: false,
     chaptersCount: 10,
-    glossary: {}
+    glossary: {},
+    viewCount: 0
 };
 
 // Chapter Names for navigation
@@ -72,6 +73,36 @@ async function fetchGlossary() {
     } catch (e) {
         console.warn("Failed to fetch glossary:", e);
     }
+}
+
+// Fetch and increment the global view count using a free public Counter API
+async function updateGlobalViewCount() {
+    const namespace = 'artsyntax_the_echo';
+    const key = 'page_views';
+    const apiUrl = `https://api.counterapi.dev/v1/${namespace}/${key}/up`;
+    
+    try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('API response not ok');
+        const data = await response.json();
+        
+        if (data && typeof data.count === 'number') {
+            state.viewCount = data.count; // Use raw count directly
+            saveSetting('echo_view_count', state.viewCount);
+            return;
+        }
+    } catch (e) {
+        console.warn("Failed to fetch global counter, using fallback simulation:", e);
+    }
+    
+    // Fallback to local simulation if API fails (offline or blocked)
+    const savedViewCount = localStorage.getItem('echo_view_count');
+    if (savedViewCount) {
+        state.viewCount = parseInt(savedViewCount, 10) + 1;
+    } else {
+        state.viewCount = 1;
+    }
+    saveSetting('echo_view_count', state.viewCount);
 }
 
 // Escape special regex characters
@@ -200,7 +231,8 @@ const elements = {
     bottomSheetBackdrop: document.getElementById('bottom-sheet-backdrop'),
     btnCloseSheet: document.getElementById('btn-close-sheet'),
     bottomSheetTerm: document.getElementById('bottom-sheet-term'),
-    bottomSheetDefinition: document.getElementById('bottom-sheet-definition')
+    bottomSheetDefinition: document.getElementById('bottom-sheet-definition'),
+    viewCountVal: document.getElementById('view-count-val')
 };
 
 // Initialize Application
@@ -225,6 +257,37 @@ async function init() {
     applyTheme(state.currentTheme);
     applyFontSize(state.fontSize);
     
+    // Display the initial view count placeholder
+    if (elements.viewCountVal) {
+        elements.viewCountVal.textContent = state.viewCount.toLocaleString();
+    }
+    
+    // Fetch and increment the global view count from Counter API (with fallback)
+    updateGlobalViewCount().then(() => {
+        if (elements.viewCountVal) {
+            elements.viewCountVal.textContent = state.viewCount.toLocaleString();
+        }
+        
+        // Poll the global counter without incrementing every 20 seconds to sync views across devices
+        setInterval(async () => {
+            try {
+                const res = await fetch(`https://api.counterapi.dev/v1/artsyntax_the_echo/page_views`);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && typeof data.count === 'number') {
+                        state.viewCount = data.count; // Use raw count directly
+                        if (elements.viewCountVal) {
+                            elements.viewCountVal.textContent = state.viewCount.toLocaleString();
+                        }
+                        saveSetting('echo_view_count', state.viewCount);
+                    }
+                }
+            } catch (e) {
+                // Ignore silent network errors
+            }
+        }, 20000);
+    });
+    
     // Check URL hash for direct chapter linking (loads chapter with highlights applied!)
     handleHashRouting();
 }
@@ -239,6 +302,14 @@ function loadSettings() {
     
     const savedChapter = localStorage.getItem('echo_current_chapter');
     if (savedChapter) state.currentChapter = parseInt(savedChapter, 10);
+
+    // Load last known view count as placeholder until API returns
+    const savedViewCount = localStorage.getItem('echo_view_count');
+    if (savedViewCount) {
+        state.viewCount = parseInt(savedViewCount, 10);
+    } else {
+        state.viewCount = 0; // Default placeholder
+    }
 }
 
 // Save specific config to localStorage
