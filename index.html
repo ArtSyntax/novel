@@ -117,10 +117,6 @@
                         </div>
                     </div>
                     
-                    <div class="book-description" id="book-description">
-                        กำลังโหลดข้อมูลเรื่องย่อประสาทวิทยา...
-                    </div>
-                    
                     <div>
                         <button id="btn-start" class="btn" aria-label="เริ่มอ่านบทแรกนิยาย THE ECHO">
                             เริ่มอ่านเนื้อเรื่องเลย
@@ -169,45 +165,28 @@
                         </div>
                     </div>
                     
-                    <div class="right-controls">
-                        <!-- Typography Controls -->
-                        <div class="font-controls" role="group" aria-label="เครื่องมือปรับขนาดตัวอักษร">
-                            <button id="font-dec" class="font-btn" aria-label="ลดขนาดตัวอักษร">-</button>
-                            <span id="font-size-val" class="font-size-val">18</span>
-                            <button id="font-inc" class="font-btn" aria-label="เพิ่มขนาดตัวอักษร">+</button>
+                        <!-- Chapter Navigation Buttons in Header (Icons Only) -->
+                        <div class="header-nav-group" role="group" aria-label="การนำทางบทนิยาย">
+                            <button id="btn-header-prev" class="header-btn header-nav-icon-btn" aria-label="ย้อนกลับไปตอนก่อนหน้า">
+                                ‹
+                            </button>
+                            <button id="btn-header-next" class="header-btn header-nav-icon-btn" aria-label="ผ่านไปตอนถัดไป">
+                                ›
+                            </button>
                         </div>
-                        
-                        <!-- Theme Toggle Controls -->
-                        <div class="theme-selector" role="group" aria-label="เครื่องมือเปลี่ยนโทนสีพื้นหลัง">
-                            <button class="theme-btn active" data-theme="sepia" aria-label="ธีมซีเปียถนอมสายตา">Sepia</button>
-                            <button class="theme-btn" data-theme="dark" aria-label="ธีมสีมืดสำหรับกลางคืน">Dark</button>
-                            <button class="theme-btn" data-theme="light" aria-label="ธีมสีสว่างปกติ">Light</button>
-                        </div>
-                    </div>
                 </div>
             </header>
 
             <!-- Main Text Content Reader -->
             <main class="reader-body">
                 <div class="reading-container">
-                    <h2 id="chapter-title">กำลังประมวลผลบทความ...</h2>
+                    <h2 id="chapter-title"></h2>
                     <article id="content-area">
                         <!-- Chapter content will be loaded dynamically here via app.js -->
                     </article>
                 </div>
             </main>
 
-            <!-- Navigation Footer Pagination -->
-            <footer class="reader-footer">
-                <div class="footer-container">
-                    <button id="btn-prev" class="footer-btn" aria-label="ย้อนกลับไปตอนก่อนหน้า">
-                        ← ตอนก่อนหน้า
-                    </button>
-                    <button id="btn-next" class="footer-btn" aria-label="ผ่านไปตอนถัดไป">
-                        ตอนถัดไป →
-                    </button>
-                </div>
-            </footer>
         </div>
 
         <!-- ==========================================================================
@@ -221,6 +200,26 @@
                 </button>
             </div>
             <div class="sidebar-body">
+                <!-- Reader Preferences Section (Font & Theme) -->
+                <div class="sidebar-controls-section">
+                    <div class="sidebar-control-group">
+                        <span class="sidebar-control-label">ขนาดอักษร:</span>
+                        <div class="font-controls" role="group" aria-label="เครื่องมือปรับขนาดตัวอักษร">
+                            <button id="font-dec" class="font-btn" aria-label="ลดขนาดตัวอักษร">-</button>
+                            <span id="font-size-val" class="font-size-val">18</span>
+                            <button id="font-inc" class="font-btn" aria-label="เพิ่มขนาดตัวอักษร">+</button>
+                        </div>
+                    </div>
+                    <div class="sidebar-control-group">
+                        <span class="sidebar-control-label">ธีมอ่านนิยาย:</span>
+                        <div class="theme-selector" role="group" aria-label="เครื่องมือเปลี่ยนโทนสีพื้นหลัง">
+                            <button class="theme-btn active" data-theme="sepia" aria-label="ธีมซีเปียถนอมสายตา">Sepia</button>
+                            <button class="theme-btn" data-theme="dark" aria-label="ธีมสีมืดสำหรับกลางคืน">Dark</button>
+                            <button class="theme-btn" data-theme="light" aria-label="ธีมสีสว่างปกติ">Light</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="sidebar-edition-section">
                     <span class="sidebar-edition-label">เวอร์ชัน:</span>
                     <div class="sidebar-edition-pills">

@@ -286,6 +286,8 @@ const elements = {
     btnStart: document.getElementById('btn-start'),
     btnPrev: document.getElementById('btn-prev'),
     btnNext: document.getElementById('btn-next'),
+    btnHeaderPrev: document.getElementById('btn-header-prev'),
+    btnHeaderNext: document.getElementById('btn-header-next'),
     btnBackHome: document.getElementById('btn-back-home'),
     themeButtons: document.querySelectorAll('.theme-btn'),
     btnFontDec: document.getElementById('font-dec'),
@@ -546,21 +548,22 @@ function setupEventListeners() {
         });
     }
 
-    // Prev / Next Buttons
-    if (elements.btnPrev) {
-        elements.btnPrev.addEventListener('click', () => {
-            if (state.currentChapter > 1) {
-                loadChapter(state.currentChapter - 1);
-            }
-        });
-    }
-    if (elements.btnNext) {
-        elements.btnNext.addEventListener('click', () => {
-            if (state.currentChapter < state.chaptersCount) {
-                loadChapter(state.currentChapter + 1);
-            }
-        });
-    }
+    // Prev / Next Buttons (Footer & Header)
+    const handlePrev = () => {
+        if (state.currentChapter > 1) {
+            loadChapter(state.currentChapter - 1);
+        }
+    };
+    const handleNext = () => {
+        if (state.currentChapter < state.chaptersCount) {
+            loadChapter(state.currentChapter + 1);
+        }
+    };
+
+    if (elements.btnPrev) elements.btnPrev.addEventListener('click', handlePrev);
+    if (elements.btnNext) elements.btnNext.addEventListener('click', handleNext);
+    if (elements.btnHeaderPrev) elements.btnHeaderPrev.addEventListener('click', handlePrev);
+    if (elements.btnHeaderNext) elements.btnHeaderNext.addEventListener('click', handleNext);
 
     // Theme Switchers
     elements.themeButtons.forEach(btn => {
@@ -721,9 +724,13 @@ async function loadChapter(chapterNumber) {
         }
     });
 
-    // Enable/disable prev/next buttons
-    elements.btnPrev.disabled = (chapterNumber === 1);
-    elements.btnNext.disabled = (chapterNumber === state.chaptersCount);
+    // Enable/disable prev/next buttons (Footer & Header)
+    const isFirst = (chapterNumber === 1);
+    const isLast = (chapterNumber === state.chaptersCount);
+    if (elements.btnPrev) elements.btnPrev.disabled = isFirst;
+    if (elements.btnNext) elements.btnNext.disabled = isLast;
+    if (elements.btnHeaderPrev) elements.btnHeaderPrev.disabled = isFirst;
+    if (elements.btnHeaderNext) elements.btnHeaderNext.disabled = isLast;
     
     // Display loading state
     const edLabel = editions[state.currentEdition].label;
