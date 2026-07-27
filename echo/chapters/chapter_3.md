@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 3: ตัวแปรที่สามและการปั่นประสาท (Remaster Edition)
+# THE ECHO — บทที่ 3: ตัวแปรแทรก
 
 **[ECHO ARCHITECTURE LAB – EXECUTIVE LOUNGE – 14:00 น.]**
 

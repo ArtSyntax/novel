@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 2: ฉากจำลองที่ถูกซ้อนรหัส (Remaster Edition)
+# THE ECHO — บทที่ 2: รหัสซ้อน
 
 **[ECHO ARCHITECTURE LAB – NEURAL SIMULATION CHAMBER – 11:15 น.]**
 

@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 8: พลอตทวิสต์ – สถาปัตยกรรมที่ย้อนกลับ (Major Twist) (Remaster Edition)
+# THE ECHO — บทที่ 8: ย้อนโครงสร้าง
 
 **[ECHO ARCHITECTURE LAB – PRIVATE RESEARCH SUITE – 09:15 น.]**
 

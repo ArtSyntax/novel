@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 9: การ Back-test และรุกต้อน (The Architect's Counter-Checkmate) (Remaster Edition)
+# THE ECHO — บทที่ 9: หมากสวนกลับ
 
 **[ECHO ARCHITECTURE LAB – PRIVATE RESEARCH SUITE – 10:00 น.]**
 

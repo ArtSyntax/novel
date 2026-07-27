@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO & Author Metadata -->
+    <title>THE ECHO — นิยายรักไซไฟจิตวิทยาและการชิงไหวชิงพริบทางการเงิน</title>
+    <meta name="description" content="ในโลกที่ความทรงจำจัดเก็บและลบล้างได้ด้วยเทคโนโลยีประสาท เมื่อสถาปนิกหนุ่ม INTJ พบลายเซ็นตัวเองบนความจำที่หายไปของลูกค้าสาวปริศนา เกมการประลองปัญญาและสงครามธุรกิจพันล้านจึงเริ่มต้นขึ้น!">
+    <meta name="keywords" content="THE ECHO, artsyntax, นิยายไซไฟ, นิยายรัก, Rom-Com, Mind Games, Corporate Warfare, อ่านนิยาย">
+    <meta name="author" content="artsyntax">
+    
+    <!-- Dublin Core Metadata Elements (Standard Bibliographic Metadata) -->
+    <meta name="dcterms.title" content="THE ECHO">
+    <meta name="dcterms.creator" content="artsyntax">
+    <meta name="dcterms.subject" content="Sci-Fi, Romance, Mind Games, Corporate Warfare">
+    <meta name="dcterms.description" content="นิยายรักแนวไซไฟ-การเงิน-จิตวิทยา เรื่องราวของความจำเสื่อม 3 ชั้นที่ไขโครงสร้างรักแท้และการตลบหลังคู่ค้า">
+    <meta name="dcterms.publisher" content="artsyntax">
+    <meta name="dcterms.date" content="2026-07-27">
+    <meta name="dcterms.language" content="th">
+    
+    <!-- Open Graph (Social Media Cards) -->
+    <meta property="og:title" content="THE ECHO — นิยายรักไซไฟจิตวิทยา">
+    <meta property="og:description" content="ตรรกะปะทะอารมณ์ และความรักที่ก้าวข้ามการลบข้อมูลความทรงจำ อ่านฟรี 10 บทบริบูรณ์ โดย artsyntax">
+    <meta property="og:image" content="echo/cover_echo.jpg">
+    <meta property="og:type" content="book">
+    <meta property="book:author" content="artsyntax">
+    <meta property="book:genre" content="Sci-Fi Romance">
+    
+    <!-- Favicon & Google Fonts Pre-connections -->
+    <link rel="icon" type="image/png" href="echo/cover_echo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&family=Noto+Serif+Thai:wght@300;400;600&family=Outfit:wght@300;400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Top Reading Progress Indicator -->
+    <div id="reading-progress" aria-hidden="true">
+        <div id="progress-bar"></div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app">
+        
+        <!-- ==========================================================================
+             1. LANDING PAGE VIEW
+             ========================================================================== -->
+        <main id="landing-view" class="container">
+            <div class="landing-card">
+                <!-- Book Cover Section -->
+                <div class="cover-wrapper">
+                    <img id="book-cover" class="cover-img" src="echo/cover_echo.jpg" alt="หน้าปกนิยาย THE ECHO สไตล์มินิมอล" fetchpriority="high" decoding="async">
+                </div>
+                
+                <!-- Book Description Section -->
+                <div class="book-info">
+                    <h1 class="book-title">THE ECHO</h1>
+                    <div class="book-subtitle">Strategic Sci-Fi Rom-Com / Mind Games</div>
+                    
+                    <div class="book-meta">
+                        <div><strong>ผู้แต่ง:</strong> artsyntax</div>
+                        <div><strong>แนวเรื่อง:</strong> Sci-Fi, Rom-Com, Drama</div>
+                        <div><strong>จำนวนตอน:</strong> 10 ตอน (บริบูรณ์)</div>
+                    </div>
+                    
+                    <p class="book-description">
+                        ในโลกที่ความทรงจำสามารถลบและจัดสถาปัตยกรรมใหม่ได้ด้วยรหัสประสาท <strong style="color: var(--accent-color);">ธันย์</strong> สถาปนิกสมองระดับแนวหน้าผู้ไร้อารมณ์ กลับสแกนเจอกลุ่มรหัสลับลบความจำซ้อนสามครั้งโดยมีลายเซ็นของตัวเขาเองในสมองของ <strong style="color: var(--accent-color);">นิ้ง</strong> ลูกค้าสาวสุดป่วนที่เขาไม่มีความทรงจำร่วมด้วยเลยแม้แต่เซกเมนต์เดียว เกมการไขปริศนาความจริงและสงครามหุ้นกู้พันล้านกับ Venture Capital ยักษ์ใหญ่จึงเริ่มต้นขึ้น!
+                    </p>
+                    
+                    <div>
+                        <button id="btn-start" class="btn" aria-label="เริ่มอ่านบทแรกนิยาย THE ECHO">
+                            เริ่มอ่านเนื้อเรื่องเลย
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <footer class="landing-footer">
+                <p>© 2026 artsyntax. สงวนลิขสิทธิ์ตามพระราชบัญญัติลิขสิทธิ์ พ.ศ. 2537 และที่แก้ไขเพิ่มเติม รวมถึงอนุสัญญาระหว่างประเทศ ห้ามมิให้คัดลอก ทำซ้ำ ดัดแปลง หรือเผยแพร่ส่วนหนึ่งส่วนใดโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร<br>
+                All rights reserved. Under Thai Copyright Act B.E. 2537 and international conventions. No part of this work may be reproduced, modified, or distributed without prior written permission from the author.</p>
+            </footer>
+        </main>
+
+        <!-- ==========================================================================
+             2. READER VIEWS PAGE
+             ========================================================================== -->
+        <div id="reader-view" class="hidden">
+            <!-- Reader Mode Header Controls -->
+            <header class="reader-header">
+                <div class="container header-container">
+                    <div class="left-controls">
+                        <!-- Menu Drawer Toggle -->
+                        <button id="btn-toggle-menu" class="header-btn" aria-label="เปิดเมนูนำทางบทนิยาย" aria-expanded="false">
+                            ☰
+                        </button>
+                        <!-- Back Home Button -->
+                        <button id="btn-back-home" class="header-btn" aria-label="กลับสู่หน้าหลักโปรเจกต์">
+                            ⌂
+                        </button>
+                    </div>
+                    
+                    <div class="right-controls">
+                        <!-- Typography Controls -->
+                        <div class="font-controls" role="group" aria-label="เครื่องมือปรับขนาดตัวอักษร">
+                            <button id="font-dec" class="font-btn" aria-label="ลดขนาดตัวอักษร">-</button>
+                            <span id="font-size-val" class="font-size-val">18</span>
+                            <button id="font-inc" class="font-btn" aria-label="เพิ่มขนาดตัวอักษร">+</button>
+                        </div>
+                        
+                        <!-- Theme Toggle Controls -->
+                        <div class="theme-selector" role="group" aria-label="เครื่องมือเปลี่ยนโทนสีพื้นหลัง">
+                            <button class="theme-btn active" data-theme="sepia" aria-label="ธีมซีเปียถนอมสายตา">Sepia</button>
+                            <button class="theme-btn" data-theme="dark" aria-label="ธีมสีมืดสำหรับกลางคืน">Dark</button>
+                            <button class="theme-btn" data-theme="light" aria-label="ธีมสีสว่างปกติ">Light</button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Text Content Reader -->
+            <main class="reader-body">
+                <div class="reading-container">
+                    <h2 id="chapter-title">กำลังประมวลผลบทความ...</h2>
+                    <article id="content-area">
+                        <!-- Chapter content will be loaded dynamically here via app.js -->
+                    </article>
+                </div>
+            </main>
+
+            <!-- Navigation Footer Pagination -->
+            <footer class="reader-footer">
+                <div class="footer-container">
+                    <button id="btn-prev" class="footer-btn" aria-label="ย้อนกลับไปตอนก่อนหน้า">
+                        ← ตอนก่อนหน้า
+                    </button>
+                    <button id="btn-next" class="footer-btn" aria-label="ผ่านไปตอนถัดไป">
+                        ตอนถัดไป →
+                    </button>
+                </div>
+            </footer>
+        </div>
+
+        <!-- ==========================================================================
+             3. SIDEBAR NAVIGATION DRAWER
+             ========================================================================== -->
+        <nav id="sidebar" aria-label="สารบัญบทนิยาย THE ECHO">
+            <div class="sidebar-header">
+                <span class="sidebar-title">สารบัญตอนทั้งหมด</span>
+                <button id="btn-menu-close" class="header-btn" aria-label="ปิดสารบัญ">
+                    ✕
+                </button>
+            </div>
+            <div class="sidebar-body">
+                <ul id="sidebar-menu">
+                    <!-- Chapters list will be populated dynamically via app.js -->
+                </ul>
+            </div>
+        </nav>
+
+    <!-- Glossary Mobile Bottom Sheet -->
+    <div id="glossary-bottom-sheet" class="bottom-sheet hidden" aria-hidden="true">
+        <div id="bottom-sheet-backdrop" class="bottom-sheet-backdrop"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-drag-handle"></div>
+            <button id="btn-close-sheet" class="bottom-sheet-close" aria-label="ปิดคำอธิบาย">&times;</button>
+            <h4 id="bottom-sheet-term">หัวข้อศัพท์</h4>
+            <p id="bottom-sheet-definition">คำนิยามเฉพาะทาง...</p>
+        </div>
+    </div>
+
+    <!-- Core Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>

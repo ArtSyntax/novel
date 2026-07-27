@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 7: เกมกระดานเปล่า (Blank Slate) (Remaster Edition)
+# THE ECHO — บทที่ 7: กระดานเปล่า
 
 **[ECHO ARCHITECTURE LAB – 08:30 น.]**
 

@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 4: กลยุทธ์นกต่อ (The Trojan Horse) (Remaster Edition)
+# THE ECHO — บทที่ 4: ม้าโทรจัน
 
 **[ECHO ARCHITECTURE LAB – PRIVATE RESEARCH SUITE – 22:15 น.]**
 

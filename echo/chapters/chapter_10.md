@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 10: สถาปัตยกรรมแห่งการมีอยู่ (The Masterpiece) (Remaster Edition)
+# THE ECHO — บทที่ 10: มาสเตอร์พีซ
 
 **[ECHO ARCHITECTURE LAB – EXECUTIVE SUITE – 18:30 น.]**
 

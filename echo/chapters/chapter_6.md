@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 6: กับดักในสเปซมินิมอล (The Snow Isolation Trap) (Remaster Edition)
+# THE ECHO — บทที่ 6: หิมะจำลอง
 
 **[ECHO ARCHITECTURE LAB – ISOLATION CORE – 01:30 น.]**
 

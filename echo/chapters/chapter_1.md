@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 1: ตรรกะที่ไม่รองรับขยะทางอารมณ์ (Remaster Edition)
+# THE ECHO — บทที่ 1: เศษตรรกะ
 
 **[ECHO ARCHITECTURE LAB – 09:42 น.]**
 

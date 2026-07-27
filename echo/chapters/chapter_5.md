@@ -1,4 +1,4 @@
-# THE ECHO — บทที่ 5: การประมูลความทรงจำ (The Corporate Takeover) (Remaster Edition)
+# THE ECHO — บทที่ 5: ประมูลลวง
 
 **[THE GRAND CRYSTAL BALLROOM – GRAND HYATT BANGKOK – 19:30 น.]**
 
