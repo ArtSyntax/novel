@@ -100,6 +100,22 @@
                         <div><strong>จำนวนตอน:</strong> <span id="book-length"></span></div>
                         <div><strong>ยอดผู้เข้าชม:</strong> <span id="view-count-val">...</span> ครั้ง</div>
                     </div>
+
+                    <!-- Edition Selection Cards -->
+                    <div class="edition-section">
+                        <div class="edition-section-label">เลือกเวอร์ชันการอ่าน (Select Edition):</div>
+                        <div class="edition-cards" role="radiogroup" aria-label="เลือกเวอร์ชันนิยาย">
+                            <button class="edition-card active" data-edition="edit2" aria-label="อ่าน Edit 2 ฉบับแก้ไขพล็อต 12 ตอน">
+                                <span class="edition-badge">แนะนำ</span>
+                                <div class="edition-card-title">Edit 2 (Remastered)</div>
+                                <div class="edition-card-sub">ฉบับปรับปรุงพล็อตสมบูรณ์ (12 ตอน)</div>
+                            </button>
+                            <button class="edition-card" data-edition="edit1" aria-label="อ่าน Edit 1 ฉบับดั้งเดิม 10 ตอน">
+                                <div class="edition-card-title">Edit 1 (Original)</div>
+                                <div class="edition-card-sub">ฉบับดั้งเดิม (10 ตอน)</div>
+                            </button>
+                        </div>
+                    </div>
                     
                     <div class="book-description" id="book-description">
                         กำลังโหลดข้อมูลเรื่องย่อประสาทวิทยา...
@@ -134,6 +150,23 @@
                         <button id="btn-back-home" class="header-btn" aria-label="กลับสู่หน้าหลักโปรเจกต์">
                             ⌂
                         </button>
+                        <!-- Edition Dropdown Switcher in Header -->
+                        <div class="header-edition-picker">
+                            <button id="btn-edition-toggle" class="header-edition-btn" aria-label="สลับเวอร์ชันนิยาย" aria-haspopup="true" aria-expanded="false">
+                                <span id="header-edition-name">Edit 2</span>
+                                <span class="arrow-icon">▾</span>
+                            </button>
+                            <div id="header-edition-menu" class="header-edition-menu hidden" role="menu">
+                                <button class="edition-menu-item active" data-edition="edit2" role="menuitem">
+                                    <strong>Edit 2 (Remastered)</strong>
+                                    <span>12 ตอน • ปรับปรุงพล็อตสมบูรณ์</span>
+                                </button>
+                                <button class="edition-menu-item" data-edition="edit1" role="menuitem">
+                                    <strong>Edit 1 (Original)</strong>
+                                    <span>10 ตอน • ฉบับดั้งเดิม</span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="right-controls">
@@ -188,6 +221,13 @@
                 </button>
             </div>
             <div class="sidebar-body">
+                <div class="sidebar-edition-section">
+                    <span class="sidebar-edition-label">เวอร์ชัน:</span>
+                    <div class="sidebar-edition-pills">
+                        <button class="sidebar-edition-pill active" data-edition="edit2">Edit 2 (12 บท)</button>
+                        <button class="sidebar-edition-pill" data-edition="edit1">Edit 1 (10 บท)</button>
+                    </div>
+                </div>
                 <ul id="sidebar-menu">
                     <!-- Chapters list will be populated dynamically via app.js -->
                 </ul>

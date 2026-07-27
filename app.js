@@ -1,28 +1,51 @@
 /**
  * THE ECHO - Novel Reader Application
  * Core JavaScript Logic (Vanilla JS)
+ * Supports Edit 1 (Original) and Edit 2 (Remastered) Edition Switching
  */
+
+// Available Editions Definition
+const editions = {
+    edit2: {
+        id: 'edit2',
+        path: 'echo_edit_2',
+        chaptersCount: 12,
+        title: 'Edit 2 (Remastered)',
+        shortTitle: 'Edit 2 (12 บท)',
+        label: 'Edit 2'
+    },
+    edit1: {
+        id: 'edit1',
+        path: 'echo',
+        chaptersCount: 10,
+        title: 'Edit 1 (Original)',
+        shortTitle: 'Edit 1 (10 บท)',
+        label: 'Edit 1'
+    }
+};
 
 // Application State
 const state = {
+    currentEdition: 'edit2', // Default to Edit 2 (Remastered)
     currentChapter: 1,
     currentTheme: 'sepia', // light, dark, sepia
     fontSize: 18, // in pixels
     isSidebarOpen: false,
-    chaptersCount: 10,
+    chaptersCount: 12,
     glossary: {},
     viewCount: 0
 };
 
-// Chapter Names for navigation (will be populated dynamically)
+// Chapter Names for navigation (populated dynamically)
 let chapterNames = [];
 
 // Fetch chapter titles dynamically from the first line of each .md file
 async function fetchChapterTitles() {
+    const edition = editions[state.currentEdition] || editions.edit2;
     const fetchPromises = [];
     for (let i = 1; i <= state.chaptersCount; i++) {
         fetchPromises.push(
-            fetch(`echo/chapters/chapter_${i}.md`)
+            fetch(`${edition.path}/chapters/chapter_${i}.md`)
                 .then(res => res.ok ? res.text() : '')
                 .then(text => {
                     const firstLine = text.split('\n')[0] || '';
@@ -44,8 +67,9 @@ async function fetchChapterTitles() {
 
 // Fetch glossary terms from metadata/glossary.md
 async function fetchGlossary() {
+    const edition = editions[state.currentEdition] || editions.edit2;
     try {
-        const response = await fetch('echo/metadata/glossary.md');
+        const response = await fetch(`${edition.path}/metadata/glossary.md`);
         if (!response.ok) return;
         const text = await response.text();
         
@@ -63,7 +87,7 @@ async function fetchGlossary() {
     }
 }
 
-// Fetch and increment the global view count using a free public Counter API
+// Fetch and increment the global view count using Counter API
 async function updateGlobalViewCount() {
     const namespace = 'artsyntax_the_echo';
     const key = 'page_views';
@@ -75,7 +99,7 @@ async function updateGlobalViewCount() {
         const data = await response.json();
         
         if (data && typeof data.count === 'number') {
-            state.viewCount = data.count; // Use raw count directly
+            state.viewCount = data.count;
             saveSetting('echo_view_count', state.viewCount);
             return;
         }
@@ -83,7 +107,7 @@ async function updateGlobalViewCount() {
         console.warn("Failed to fetch global counter, using fallback simulation:", e);
     }
     
-    // Fallback to local simulation if API fails (offline or blocked)
+    // Fallback to local simulation if API fails
     const savedViewCount = localStorage.getItem('echo_view_count');
     if (savedViewCount) {
         state.viewCount = parseInt(savedViewCount, 10) + 1;
@@ -95,8 +119,9 @@ async function updateGlobalViewCount() {
 
 // Fetch synopsis from metadata/synopsis.md and render it
 async function fetchSynopsis() {
+    const edition = editions[state.currentEdition] || editions.edit2;
     try {
-        const response = await fetch('echo/metadata/synopsis.md');
+        const response = await fetch(`${edition.path}/metadata/synopsis.md`);
         if (!response.ok) throw new Error('Synopsis file not found');
         const markdown = await response.text();
         
@@ -109,7 +134,6 @@ async function fetchSynopsis() {
         }
     } catch (e) {
         console.warn("Failed to fetch synopsis:", e);
-        // Fallback generic error text if fetch fails (no hardcoded novel text)
         if (elements.bookDescription) {
             elements.bookDescription.innerHTML = `<p class="error-text">เกิดข้อผิดพลาดในการโหลดข้อมูลเรื่องย่อ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</p>`;
         }
@@ -118,8 +142,9 @@ async function fetchSynopsis() {
 
 // Fetch book metadata from metadata/metadata.md and update landing page details
 async function fetchMetadata() {
+    const edition = editions[state.currentEdition] || editions.edit2;
     try {
-        const response = await fetch('echo/metadata/metadata.md');
+        const response = await fetch(`${edition.path}/metadata/metadata.md`);
         if (!response.ok) throw new Error('Metadata file not found');
         const text = await response.text();
         
@@ -147,12 +172,11 @@ async function fetchMetadata() {
         }
     } catch (e) {
         console.warn("Failed to fetch metadata, using fallbacks:", e);
-        // Generic offline fallbacks without hardcoded novel content
-        if (elements.bookTitle) elements.bookTitle.textContent = 'ไม่พบข้อมูลวรรณกรรม';
-        if (elements.bookSubtitle) elements.bookSubtitle.textContent = 'การเชื่อมต่อออฟไลน์';
-        if (elements.bookAuthor) elements.bookAuthor.textContent = 'ไม่สามารถดึงข้อมูลได้';
-        if (elements.bookGenre) elements.bookGenre.textContent = 'ไม่สามารถดึงข้อมูลได้';
-        if (elements.bookLength) elements.bookLength.textContent = 'ไม่พบสถิติการอัปเดต';
+        if (elements.bookTitle) elements.bookTitle.textContent = 'THE ECHO';
+        if (elements.bookSubtitle) elements.bookSubtitle.textContent = 'Strategic Sci-Fi Rom-Com';
+        if (elements.bookAuthor) elements.bookAuthor.textContent = 'artsyntax';
+        if (elements.bookGenre) elements.bookGenre.textContent = 'Sci-Fi, Rom-Com, Drama';
+        if (elements.bookLength) elements.bookLength.textContent = `${state.chaptersCount} ตอน (บริบูรณ์)`;
     }
 }
 
@@ -168,7 +192,6 @@ function highlightGlossaryTerms(html, glossary) {
     let output = html;
     const sortedTerms = Object.keys(glossary).sort((a, b) => b.length - a.length);
     
-    // Construct single regex pattern for efficiency and preventing nested replacements
     const regexStr = sortedTerms.map(term => {
         const escaped = escapeRegExp(term);
         const isEnglish = /^[A-Za-z0-9\s-]+$/.test(term);
@@ -176,7 +199,6 @@ function highlightGlossaryTerms(html, glossary) {
     }).join('|');
     const pattern = new RegExp(`(${regexStr})`, 'gi');
     
-    // Split by HTML tags to avoid replacing inside tag attributes
     const parts = output.split(/(<[^>]+>)/g);
     for (let i = 0; i < parts.length; i++) {
         if (i % 2 === 0) { // Text segment
@@ -191,10 +213,7 @@ function highlightGlossaryTerms(html, glossary) {
 }
 
 function parseMarkdown(md) {
-    // Normalize newlines
     let html = md.replace(/\r\n/g, '\n');
-    
-    // Split by double newlines to find block elements first
     let blocks = html.split(/\n{2,}/);
     
     let parsedBlocks = blocks.map(block => {
@@ -242,7 +261,6 @@ function parseMarkdown(md) {
         }
         
         if (isBlock) {
-            // Apply inline formatting to block content (bold, links)
             blockHtml = blockHtml.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             blockHtml = blockHtml.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
             return blockHtml;
@@ -294,47 +312,37 @@ const elements = {
 
 // Initialize Application
 async function init() {
-    // Load saved settings from LocalStorage
     loadSettings();
+    updateEditionUI();
     
-    // Fetch chapter titles and glossary metadata in parallel first
     try {
         await Promise.all([fetchChapterTitles(), fetchGlossary()]);
-        // Fetch book general metadata and description dynamically
         await Promise.all([fetchMetadata(), fetchSynopsis()]);
     } catch (e) {
         console.warn("Failed to pre-fetch metadata, using fallbacks:", e);
     }
     
-    // Build sidebar menu links (with dynamic or default names)
     buildSidebarMenu();
-    
-    // Set up Event Listeners
     setupEventListeners();
-    
-    // Apply current configurations
     applyTheme(state.currentTheme);
     applyFontSize(state.fontSize);
     
-    // Display the initial view count placeholder
     if (elements.viewCountVal) {
         elements.viewCountVal.textContent = state.viewCount.toLocaleString();
     }
     
-    // Fetch and increment the global view count from Counter API (with fallback)
     updateGlobalViewCount().then(() => {
         if (elements.viewCountVal) {
             elements.viewCountVal.textContent = state.viewCount.toLocaleString();
         }
         
-        // Poll the global counter without incrementing every 20 seconds to sync views across devices
         setInterval(async () => {
             try {
                 const res = await fetch(`https://api.counterapi.dev/v1/artsyntax_the_echo/page_views`);
                 if (res.ok) {
                     const data = await res.json();
                     if (data && typeof data.count === 'number') {
-                        state.viewCount = data.count; // Use raw count directly
+                        state.viewCount = data.count;
                         if (elements.viewCountVal) {
                             elements.viewCountVal.textContent = state.viewCount.toLocaleString();
                         }
@@ -342,17 +350,22 @@ async function init() {
                     }
                 }
             } catch (e) {
-                // Ignore silent network errors
+                // Ignore silent errors
             }
         }, 20000);
     });
     
-    // Check URL hash for direct chapter linking (loads chapter with highlights applied!)
     handleHashRouting();
 }
 
 // Load configurations from localStorage
 function loadSettings() {
+    const savedEdition = localStorage.getItem('echo_edition');
+    if (savedEdition && editions[savedEdition]) {
+        state.currentEdition = savedEdition;
+        state.chaptersCount = editions[savedEdition].chaptersCount;
+    }
+    
     const savedTheme = localStorage.getItem('echo_theme');
     if (savedTheme) state.currentTheme = savedTheme;
     
@@ -362,18 +375,88 @@ function loadSettings() {
     const savedChapter = localStorage.getItem('echo_current_chapter');
     if (savedChapter) state.currentChapter = parseInt(savedChapter, 10);
 
-    // Load last known view count as placeholder until API returns
     const savedViewCount = localStorage.getItem('echo_view_count');
     if (savedViewCount) {
         state.viewCount = parseInt(savedViewCount, 10);
     } else {
-        state.viewCount = 0; // Default placeholder
+        state.viewCount = 0;
     }
 }
 
 // Save specific config to localStorage
 function saveSetting(key, value) {
     localStorage.setItem(key, value);
+}
+
+// Switch between Edit 1 and Edit 2
+async function switchEdition(editionId) {
+    if (!editions[editionId] || state.currentEdition === editionId) return;
+    
+    state.currentEdition = editionId;
+    state.chaptersCount = editions[editionId].chaptersCount;
+    saveSetting('echo_edition', editionId);
+    
+    // Clamp current chapter if switching to an edition with fewer chapters
+    if (state.currentChapter > state.chaptersCount) {
+        state.currentChapter = state.chaptersCount;
+    }
+    
+    updateEditionUI();
+    
+    if (elements.bookDescription && !elements.landingView.classList.contains('hidden')) {
+        elements.bookDescription.innerHTML = `<div class="loader-container" style="padding: 20px 0;"><div class="loader"></div><p>กำลังจูนสัญญาณ ${editions[editionId].label}...</p></div>`;
+    }
+
+    try {
+        await Promise.all([fetchChapterTitles(), fetchGlossary()]);
+        await Promise.all([fetchMetadata(), fetchSynopsis()]);
+    } catch (e) {
+        console.warn("Error switching edition metadata:", e);
+    }
+    
+    buildSidebarMenu();
+    
+    // If currently reading, reload the chapter for the new edition
+    if (!elements.readerView.classList.contains('hidden')) {
+        loadChapter(state.currentChapter);
+    }
+}
+
+// Update Edition Selector UI elements across Landing Page, Header, and Sidebar
+function updateEditionUI() {
+    const currentEd = state.currentEdition;
+    const editionObj = editions[currentEd];
+    
+    // 1. Landing Page Cards
+    document.querySelectorAll('.edition-card').forEach(card => {
+        if (card.dataset.edition === currentEd) {
+            card.classList.add('active');
+        } else {
+            card.classList.remove('active');
+        }
+    });
+    
+    // 2. Header Dropdown Button Label & Menu items
+    const headerEditionName = document.getElementById('header-edition-name');
+    if (headerEditionName) {
+        headerEditionName.textContent = editionObj.shortTitle;
+    }
+    document.querySelectorAll('.edition-menu-item').forEach(item => {
+        if (item.dataset.edition === currentEd) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+    
+    // 3. Sidebar Edition Pills
+    document.querySelectorAll('.sidebar-edition-pill').forEach(pill => {
+        if (pill.dataset.edition === currentEd) {
+            pill.classList.add('active');
+        } else {
+            pill.classList.remove('active');
+        }
+    });
 }
 
 // Build Sidebar Chapter List
@@ -398,7 +481,56 @@ function buildSidebarMenu() {
 
 // Set up UI Event Listeners
 function setupEventListeners() {
-    // Landing View Buttons
+    // Edition Switchers on Landing Page
+    document.querySelectorAll('.edition-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            const ed = e.currentTarget.dataset.edition;
+            switchEdition(ed);
+        });
+    });
+
+    // Edition Switchers in Sidebar
+    document.querySelectorAll('.sidebar-edition-pill').forEach(pill => {
+        pill.addEventListener('click', (e) => {
+            const ed = e.currentTarget.dataset.edition;
+            switchEdition(ed);
+        });
+    });
+
+    // Header Edition Picker Toggle & Menu items
+    const btnEditionToggle = document.getElementById('btn-edition-toggle');
+    const headerEditionMenu = document.getElementById('header-edition-menu');
+    if (btnEditionToggle && headerEditionMenu) {
+        btnEditionToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isHidden = headerEditionMenu.classList.contains('hidden');
+            if (isHidden) {
+                headerEditionMenu.classList.remove('hidden');
+                btnEditionToggle.setAttribute('aria-expanded', 'true');
+            } else {
+                headerEditionMenu.classList.add('hidden');
+                btnEditionToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        document.querySelectorAll('.edition-menu-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const ed = e.currentTarget.dataset.edition;
+                headerEditionMenu.classList.add('hidden');
+                btnEditionToggle.setAttribute('aria-expanded', 'false');
+                switchEdition(ed);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!btnEditionToggle.contains(e.target) && !headerEditionMenu.contains(e.target)) {
+                headerEditionMenu.classList.add('hidden');
+                btnEditionToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+
+    // Landing View Start Reading Button
     if (elements.btnStart) {
         elements.btnStart.addEventListener('click', () => {
             showView('reader');
@@ -495,8 +627,7 @@ function showBottomSheet(term, definition) {
     elements.bottomSheet.classList.remove('hidden');
     elements.bottomSheet.setAttribute('aria-hidden', 'false');
     
-    // Force reflow
-    elements.bottomSheet.offsetHeight;
+    elements.bottomSheet.offsetHeight; // Force reflow
     elements.bottomSheet.classList.add('open');
 }
 
@@ -514,9 +645,32 @@ function hideBottomSheet() {
     }, 300);
 }
 
-// Handle routing based on URL Hash (#chapter-1)
+// Handle routing based on URL Hash (#edit2/chapter-1 or #chapter-1)
 function handleHashRouting() {
     const hash = window.location.hash;
+    
+    // Hash format with edition prefix: #edit1/chapter-3 or #edit2/chapter-5
+    const editionMatch = hash.match(/^#(edit1|edit2)\/chapter-(\d+)$/);
+    if (editionMatch) {
+        const edId = editionMatch[1];
+        const chapterNum = parseInt(editionMatch[2], 10);
+        if (editions[edId]) {
+            if (state.currentEdition !== edId) {
+                switchEdition(edId).then(() => {
+                    showView('reader');
+                    loadChapter(chapterNum);
+                });
+                return;
+            }
+        }
+        if (chapterNum >= 1 && chapterNum <= state.chaptersCount) {
+            showView('reader');
+            loadChapter(chapterNum);
+            return;
+        }
+    }
+    
+    // Hash format without edition prefix: #chapter-3
     const match = hash.match(/^#chapter-(\d+)$/);
     if (match) {
         const chapterNum = parseInt(match[1], 10);
@@ -527,8 +681,8 @@ function handleHashRouting() {
         }
     }
     
-    // Default: show landing unless active progress was loaded
-    if (hash === '' && elements.landingView.classList.contains('hidden')) {
+    // Default: show landing unless active reader view
+    if (hash === '' && !elements.readerView.classList.contains('hidden')) {
         showView('landing');
     }
 }
@@ -539,7 +693,8 @@ function showView(view) {
         elements.landingView.classList.remove('hidden');
         elements.readerView.classList.add('hidden');
         document.body.classList.remove('reader-mode-active');
-        document.title = "THE ECHO — นิยายรักไซไฟจิตวิทยา";
+        const edLabel = editions[state.currentEdition].label;
+        document.title = `THE ECHO (${edLabel}) — นิยายรักไซไฟจิตวิทยา`;
     } else {
         elements.landingView.classList.add('hidden');
         elements.readerView.classList.remove('hidden');
@@ -553,7 +708,7 @@ async function loadChapter(chapterNumber) {
     
     state.currentChapter = chapterNumber;
     saveSetting('echo_current_chapter', chapterNumber);
-    window.location.hash = `#chapter-${chapterNumber}`;
+    window.location.hash = `#${state.currentEdition}/chapter-${chapterNumber}`;
     
     // Update Active class in Sidebar
     const items = elements.sidebarMenu.querySelectorAll('.sidebar-item');
@@ -571,10 +726,11 @@ async function loadChapter(chapterNumber) {
     elements.btnNext.disabled = (chapterNumber === state.chaptersCount);
     
     // Display loading state
+    const edLabel = editions[state.currentEdition].label;
     elements.contentArea.innerHTML = `
         <div class="loader-container">
             <div class="loader"></div>
-            <p>กำลังจูนสัญญาณความทรงจำบทที่ ${chapterNumber}...</p>
+            <p>กำลังจูนสัญญาณความทรงจำบทที่ ${chapterNumber} (${edLabel})...</p>
         </div>
     `;
     
@@ -582,8 +738,8 @@ async function loadChapter(chapterNumber) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
-        // Fetch the markdown file from the workspace root
-        const response = await fetch(`echo/chapters/chapter_${chapterNumber}.md`);
+        const edition = editions[state.currentEdition] || editions.edit2;
+        const response = await fetch(`${edition.path}/chapters/chapter_${chapterNumber}.md`);
         if (!response.ok) {
             throw new Error(`Failed to fetch chapter ${chapterNumber}`);
         }
@@ -593,21 +749,16 @@ async function loadChapter(chapterNumber) {
         // Strip the first line if it is a heading containing the chapter title/number
         const lines = markdownContent.split('\n');
         if (lines.length > 0 && lines[0].trim().startsWith('#')) {
-            lines.shift(); // Remove the first line
-            // Remove any leading empty lines
+            lines.shift();
             while (lines.length > 0 && lines[0].trim() === '') {
                 lines.shift();
             }
             markdownContent = lines.join('\n');
         }
         
-        // Parse and render the content
         let htmlContent = parseMarkdown(markdownContent);
-        
-        // Apply glossary highlighting to the HTML content
         htmlContent = highlightGlossaryTerms(htmlContent, state.glossary);
         
-        // Append copyright notice dynamically by reading it from the landing footer
         const footerEl = document.querySelector('.landing-footer p');
         const copyrightText = footerEl ? footerEl.innerHTML : '© 2026 artsyntax. All rights reserved.';
         const copyrightHtml = `
@@ -618,15 +769,12 @@ async function loadChapter(chapterNumber) {
         `;
         htmlContent += copyrightHtml;
         
-        // Inject into content area
         elements.contentArea.innerHTML = htmlContent;
         
-        // Set document title
-        const currentName = chapterNames[chapterNumber - 1];
+        const currentName = chapterNames[chapterNumber - 1] || `บทที่ ${chapterNumber}`;
         elements.chapterTitle.textContent = currentName;
-        document.title = `${currentName} — THE ECHO`;
+        document.title = `${currentName} — THE ECHO (${edLabel})`;
         
-        // Reset progress bar
         updateProgressBar();
         
     } catch (error) {
@@ -658,7 +806,6 @@ function applyTheme(theme) {
     state.currentTheme = theme;
     saveSetting('echo_theme', theme);
     
-    // Remove active class from all buttons and add to selected
     elements.themeButtons.forEach(btn => {
         if (btn.dataset.theme === theme) {
             btn.classList.add('active');
@@ -667,7 +814,6 @@ function applyTheme(theme) {
         }
     });
 
-    // Apply color variables to document element
     const root = document.documentElement;
     if (theme === 'sepia') {
         root.style.setProperty('--bg-color', '#f5efeb');
@@ -699,7 +845,6 @@ function applyFontSize(size) {
     saveSetting('echo_font_size', size);
     elements.contentArea.style.fontSize = `${size}px`;
     
-    // Update font indicator text if present
     const sizeIndicator = document.getElementById('font-size-val');
     if (sizeIndicator) sizeIndicator.textContent = size;
 }
