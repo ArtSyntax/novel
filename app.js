@@ -591,7 +591,7 @@ function setupEventListeners() {
     
     // Close sidebar when clicking outside on mobile overlay
     document.addEventListener('click', (e) => {
-        if (state.isSidebarOpen && !elements.sidebar.contains(e.target) && e.target !== elements.btnToggleMenu) {
+        if (state.isSidebarOpen && !elements.sidebar.contains(e.target) && !elements.btnToggleMenu.contains(e.target)) {
             toggleSidebar(false);
         }
     });
