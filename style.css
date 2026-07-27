@@ -164,6 +164,14 @@ a:hover {
     margin-bottom: 30px;
 }
 
+.book-description p {
+    margin-bottom: 14px;
+}
+
+.book-description p:last-child {
+    margin-bottom: 0;
+}
+
 .btn {
     display: inline-flex;
     align-items: center;

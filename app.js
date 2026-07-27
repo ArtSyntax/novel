@@ -14,20 +14,8 @@ const state = {
     viewCount: 0
 };
 
-// Chapter Names for navigation
-// Chapter Names for navigation (Default fallbacks, will be overwritten by dynamic fetches)
-let chapterNames = [
-    "บทที่ 1: เศษตรรกะ",
-    "บทที่ 2: รหัสซ้อน",
-    "บทที่ 3: ตัวแปรแทรก",
-    "บทที่ 4: ม้าโทรจัน",
-    "บทที่ 5: ประมูลลวง",
-    "บทที่ 6: หิมะจำลอง",
-    "บทที่ 7: กระดานเปล่า",
-    "บทที่ 8: ย้อนโครงสร้าง",
-    "บทที่ 9: หมากสวนกลับ",
-    "บทที่ 10: มาสเตอร์พีซ"
-];
+// Chapter Names for navigation (will be populated dynamically)
+let chapterNames = [];
 
 // Fetch chapter titles dynamically from the first line of each .md file
 async function fetchChapterTitles() {
@@ -103,6 +91,69 @@ async function updateGlobalViewCount() {
         state.viewCount = 1;
     }
     saveSetting('echo_view_count', state.viewCount);
+}
+
+// Fetch synopsis from metadata/synopsis.md and render it
+async function fetchSynopsis() {
+    try {
+        const response = await fetch('echo/metadata/synopsis.md');
+        if (!response.ok) throw new Error('Synopsis file not found');
+        const markdown = await response.text();
+        
+        let html = parseMarkdown(markdown);
+        // Highlight glossary terms
+        html = highlightGlossaryTerms(html, state.glossary);
+        
+        if (elements.bookDescription) {
+            elements.bookDescription.innerHTML = html;
+        }
+    } catch (e) {
+        console.warn("Failed to fetch synopsis:", e);
+        // Fallback generic error text if fetch fails (no hardcoded novel text)
+        if (elements.bookDescription) {
+            elements.bookDescription.innerHTML = `<p class="error-text">เกิดข้อผิดพลาดในการโหลดข้อมูลเรื่องย่อ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต</p>`;
+        }
+    }
+}
+
+// Fetch book metadata from metadata/metadata.md and update landing page details
+async function fetchMetadata() {
+    try {
+        const response = await fetch('echo/metadata/metadata.md');
+        if (!response.ok) throw new Error('Metadata file not found');
+        const text = await response.text();
+        
+        // Extract values using regex patterns matching markdown format
+        const titleMatch    = text.match(/\*\*(?:ชื่อเรื่อง|Title)\s*\(Title\):\*\*\s*(.*)/i);
+        const subtitleMatch = text.match(/\*\*(?:คำโปรย|Subtitle)\s*\(Subtitle\):\*\*\s*(.*)/i);
+        const authorMatch   = text.match(/\*\*(?:ผู้แต่ง|Author)\s*\(Author\):\*\*\s*(.*)/i);
+        const genreMatch    = text.match(/\*\*(?:แนวเรื่อง|Genre)\s*\(Genre\):\*\*\s*(.*)/i);
+        const lengthMatch   = text.match(/\*\*(?:จำนวนตอน|Length)\s*\(Length\):\*\*\s*(.*)/i);
+
+        if (titleMatch && elements.bookTitle) {
+            elements.bookTitle.textContent = titleMatch[1].trim();
+        }
+        if (subtitleMatch && elements.bookSubtitle) {
+            elements.bookSubtitle.textContent = subtitleMatch[1].trim();
+        }
+        if (authorMatch && elements.bookAuthor) {
+            elements.bookAuthor.textContent = authorMatch[1].trim();
+        }
+        if (genreMatch && elements.bookGenre) {
+            elements.bookGenre.textContent = genreMatch[1].trim();
+        }
+        if (lengthMatch && elements.bookLength) {
+            elements.bookLength.textContent = lengthMatch[1].trim();
+        }
+    } catch (e) {
+        console.warn("Failed to fetch metadata, using fallbacks:", e);
+        // Generic offline fallbacks without hardcoded novel content
+        if (elements.bookTitle) elements.bookTitle.textContent = 'ไม่พบข้อมูลวรรณกรรม';
+        if (elements.bookSubtitle) elements.bookSubtitle.textContent = 'การเชื่อมต่อออฟไลน์';
+        if (elements.bookAuthor) elements.bookAuthor.textContent = 'ไม่สามารถดึงข้อมูลได้';
+        if (elements.bookGenre) elements.bookGenre.textContent = 'ไม่สามารถดึงข้อมูลได้';
+        if (elements.bookLength) elements.bookLength.textContent = 'ไม่พบสถิติการอัปเดต';
+    }
 }
 
 // Escape special regex characters
@@ -232,7 +283,13 @@ const elements = {
     btnCloseSheet: document.getElementById('btn-close-sheet'),
     bottomSheetTerm: document.getElementById('bottom-sheet-term'),
     bottomSheetDefinition: document.getElementById('bottom-sheet-definition'),
-    viewCountVal: document.getElementById('view-count-val')
+    viewCountVal: document.getElementById('view-count-val'),
+    bookDescription: document.getElementById('book-description'),
+    bookTitle: document.getElementById('book-title'),
+    bookSubtitle: document.getElementById('book-subtitle'),
+    bookAuthor: document.getElementById('book-author'),
+    bookGenre: document.getElementById('book-genre'),
+    bookLength: document.getElementById('book-length')
 };
 
 // Initialize Application
@@ -243,6 +300,8 @@ async function init() {
     // Fetch chapter titles and glossary metadata in parallel first
     try {
         await Promise.all([fetchChapterTitles(), fetchGlossary()]);
+        // Fetch book general metadata and description dynamically
+        await Promise.all([fetchMetadata(), fetchSynopsis()]);
     } catch (e) {
         console.warn("Failed to pre-fetch metadata, using fallbacks:", e);
     }
@@ -548,12 +607,13 @@ async function loadChapter(chapterNumber) {
         // Apply glossary highlighting to the HTML content
         htmlContent = highlightGlossaryTerms(htmlContent, state.glossary);
         
-        // Append copyright notice dynamically
+        // Append copyright notice dynamically by reading it from the landing footer
+        const footerEl = document.querySelector('.landing-footer p');
+        const copyrightText = footerEl ? footerEl.innerHTML : '© 2026 artsyntax. All rights reserved.';
         const copyrightHtml = `
             <div class="chapter-copyright">
                 <hr>
-                <p>© 2026 artsyntax. สงวนลิขสิทธิ์ตามพระราชบัญญัติลิขสิทธิ์ พ.ศ. 2537 และที่แก้ไขเพิ่มเติม รวมถึงอนุสัญญาระหว่างประเทศ ผลงานนี้ได้รับอนุญาตให้อ่านเฉพาะบนเว็บไซต์นี้เท่านั้น ห้ามคัดลอก ทำซ้ำ ดัดแปลง หรือเผยแพร่ส่วนหนึ่งส่วนใดโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร<br>
-                All rights reserved. Under Thai Copyright Act B.E. 2537 and international conventions. Authorized for reading exclusively on this website. No part of this work may be reproduced, modified, or distributed without prior written permission from the author.</p>
+                <p>${copyrightText}</p>
             </div>
         `;
         htmlContent += copyrightHtml;

@@ -6,8 +6,9 @@
 
 ## 📋 1. ข้อมูลทั่วไป (General Information)
 *   **ชื่อเรื่อง (Title):** THE ECHO
+*   **คำโปรย (Subtitle):** Strategic Sci-Fi Rom-Com / Mind Games
 *   **ผู้แต่ง (Author):** artsyntax
-*   **แนวเรื่อง (Genre):** Strategic Sci-Fi Rom-Com / Mind Games / Corporate Warfare
+*   **แนวเรื่อง (Genre):** Sci-Fi, Rom-Com, Drama, Corporate Warfare
 *   **จำนวนตอน (Length):** 10 ตอน (บริบูรณ์)
 *   **ปีที่ประพันธ์ (Release Year):** 2026
 
