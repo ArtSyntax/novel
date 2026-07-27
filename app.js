@@ -11,7 +11,8 @@ const editions = {
         path: 'echo_edit_2',
         chaptersCount: 12,
         title: 'Edit 2 (Remastered)',
-        shortTitle: 'Edit 2 (12 บท)',
+        shortTitle: 'Edit 2 (12 ตอน)',
+        headerTitle: 'THE ECHO (Edit 2)',
         label: 'Edit 2'
     },
     edit1: {
@@ -19,7 +20,8 @@ const editions = {
         path: 'echo',
         chaptersCount: 10,
         title: 'Edit 1 (Original)',
-        shortTitle: 'Edit 1 (10 บท)',
+        shortTitle: 'Edit 1 (10 ตอน)',
+        headerTitle: 'THE ECHO (Edit 1)',
         label: 'Edit 1'
     }
 };
@@ -441,7 +443,7 @@ function updateEditionUI() {
     // 2. Header Dropdown Button Label & Menu items
     const headerEditionName = document.getElementById('header-edition-name');
     if (headerEditionName) {
-        headerEditionName.textContent = editionObj.shortTitle;
+        headerEditionName.textContent = editionObj.headerTitle;
     }
     document.querySelectorAll('.edition-menu-item').forEach(item => {
         if (item.dataset.edition === currentEd) {
@@ -586,8 +588,14 @@ function setupEventListeners() {
     });
 
     // Sidebar Toggling
-    elements.btnToggleMenu.addEventListener('click', () => toggleSidebar(true));
-    elements.btnMenuClose.addEventListener('click', () => toggleSidebar(false));
+    elements.btnToggleMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSidebar(!state.isSidebarOpen);
+    });
+    elements.btnMenuClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleSidebar(false);
+    });
     
     // Close sidebar when clicking outside on mobile overlay
     document.addEventListener('click', (e) => {
