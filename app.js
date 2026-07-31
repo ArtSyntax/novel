@@ -316,6 +316,7 @@ const elements = {
 
 // Initialize Application
 async function init() {
+    applyConfig();
     loadSettings();
     updateEditionUI();
     
@@ -362,12 +363,41 @@ async function init() {
     handleHashRouting();
 }
 
+// Apply global configuration
+function applyConfig() {
+    if (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.editions) {
+        // Set default edition if no saved edition exists
+        if (!localStorage.getItem('echo_edition') && APP_CONFIG.defaultEdition) {
+            state.currentEdition = APP_CONFIG.defaultEdition;
+            if (editions[state.currentEdition]) {
+                state.chaptersCount = editions[state.currentEdition].chaptersCount;
+            }
+        }
+
+        // Hide UI elements for disabled editions
+        Object.keys(APP_CONFIG.editions).forEach(edId => {
+            if (!APP_CONFIG.editions[edId].enabled) {
+                // Landing page cards
+                document.querySelectorAll(`.edition-card[data-edition="${edId}"]`).forEach(el => el.style.display = 'none');
+                // Header menu items
+                document.querySelectorAll(`.edition-menu-item[data-edition="${edId}"]`).forEach(el => el.style.display = 'none');
+                // Sidebar pills
+                document.querySelectorAll(`.sidebar-edition-pill[data-edition="${edId}"]`).forEach(el => el.style.display = 'none');
+            }
+        });
+    }
+}
+
 // Load configurations from localStorage
 function loadSettings() {
     const savedEdition = localStorage.getItem('echo_edition');
     if (savedEdition && editions[savedEdition]) {
-        state.currentEdition = savedEdition;
-        state.chaptersCount = editions[savedEdition].chaptersCount;
+        // Only load saved edition if it's not disabled in config
+        const isEnabled = typeof APP_CONFIG !== 'undefined' && APP_CONFIG.editions[savedEdition] ? APP_CONFIG.editions[savedEdition].enabled : true;
+        if (isEnabled) {
+            state.currentEdition = savedEdition;
+            state.chaptersCount = editions[savedEdition].chaptersCount;
+        }
     }
     
     const savedTheme = localStorage.getItem('echo_theme');
