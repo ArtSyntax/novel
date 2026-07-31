@@ -1009,6 +1009,15 @@ a:hover {
     line-height: 1.6;
 }
 
+/* CHAPTER BOTTOM NAVIGATION */
+.chapter-bottom-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: 50px 0 20px 0;
+}
+
 /* ==========================================================================
    EDITION SELECTOR COMPONENT STYLES
    ========================================================================== */

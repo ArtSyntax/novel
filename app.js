@@ -804,6 +804,23 @@ async function loadChapter(chapterNumber) {
         let htmlContent = parseMarkdown(markdownContent);
         htmlContent = highlightGlossaryTerms(htmlContent, state.glossary);
         
+        const isFirst = (chapterNumber === 1);
+        const isLast = (chapterNumber === state.chaptersCount);
+        const bottomNavHtml = `
+            <div class="chapter-bottom-nav">
+                <button class="header-btn header-nav-icon-btn btn-bottom-prev" aria-label="ย้อนกลับไปตอนก่อนหน้า" ${isFirst ? 'disabled' : ''}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <button class="header-btn header-nav-icon-btn btn-bottom-next" aria-label="ผ่านไปตอนถัดไป" ${isLast ? 'disabled' : ''}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        `;
+        
         const footerEl = document.querySelector('.landing-footer p');
         const copyrightText = footerEl ? footerEl.innerHTML : '© 2026 artsyntax. All rights reserved.';
         const copyrightHtml = `
@@ -812,9 +829,26 @@ async function loadChapter(chapterNumber) {
                 <p>${copyrightText}</p>
             </div>
         `;
-        htmlContent += copyrightHtml;
+        htmlContent += bottomNavHtml + copyrightHtml;
         
         elements.contentArea.innerHTML = htmlContent;
+        
+        const bottomPrev = elements.contentArea.querySelector('.btn-bottom-prev');
+        const bottomNext = elements.contentArea.querySelector('.btn-bottom-next');
+        if (bottomPrev) {
+            bottomPrev.addEventListener('click', () => {
+                if (state.currentChapter > 1) {
+                    loadChapter(state.currentChapter - 1);
+                }
+            });
+        }
+        if (bottomNext) {
+            bottomNext.addEventListener('click', () => {
+                if (state.currentChapter < state.chaptersCount) {
+                    loadChapter(state.currentChapter + 1);
+                }
+            });
+        }
         
         const currentName = chapterNames[chapterNumber - 1] || `บทที่ ${chapterNumber}`;
         elements.chapterTitle.textContent = currentName;
